@@ -4,27 +4,29 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-  Copyright (C) 2009-2011 Michael Möller <mmoeller@openhardwaremonitor.org>
+  Copyright (C) 2009-2011 Michael Möller <mmoeller@OpenHardwareMonitorCore.org>
 	
 */
 
-namespace OpenHardwareMonitorCore.Hardware {
+namespace OpenHardwareMonitorCore.Hardware;
 
   public delegate void SensorEventHandler(ISensor sensor);
-  
-  public enum HardwareType {
+
+public enum HardwareType
+{
     Mainboard,
     SuperIO,
     CPU,
     RAM,
     GpuNvidia,
-    GpuAti,    
+    GpuAti,
     TBalancer,
     Heatmaster,
     HDD
-  }
+}
 
-  public interface IHardware : IElement {
+public interface IHardware : IElement
+{
 
     string Name { get; set; }
     Identifier Identifier { get; }
@@ -43,5 +45,4 @@ namespace OpenHardwareMonitorCore.Hardware {
 
     event SensorEventHandler SensorAdded;
     event SensorEventHandler SensorRemoved;
-  }
 }

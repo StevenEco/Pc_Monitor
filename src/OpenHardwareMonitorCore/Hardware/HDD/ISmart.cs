@@ -4,7 +4,7 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-  Copyright (C) 2011-2012 Michael Möller <mmoeller@openhardwaremonitor.org>
+  Copyright (C) 2011-2012 Michael Möller <mmoeller@OpenHardwareMonitorCore.org>
 	
 */
 
@@ -12,9 +12,10 @@ using System;
 using System.Collections.Generic;
 
 
-namespace OpenHardwareMonitorCore.Hardware.HDD {
+namespace OpenHardwareMonitorCore.Hardware.HDD;
 
-  internal interface ISmart {
+internal interface ISmart
+{
 
     IntPtr OpenDrive(int driveNumber);
 
@@ -25,12 +26,11 @@ namespace OpenHardwareMonitorCore.Hardware.HDD {
     DriveThresholdValue[] ReadSmartThresholds(IntPtr handle, int driveNumber);
 
     bool ReadNameAndFirmwareRevision(IntPtr handle, int driveNumber,
-      out string name, out string firmwareRevision); 
+      out string name, out string firmwareRevision);
 
     void CloseHandle(IntPtr handle);
 
     IntPtr InvalidHandle { get; }
 
     string[] GetLogicalDrives(int driveIndex);
-  }
 }

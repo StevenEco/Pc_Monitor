@@ -4,7 +4,7 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-  Copyright (C) 2009-2020 Michael Möller <mmoeller@openhardwaremonitor.org>
+  Copyright (C) 2009-2020 Michael Möller <mmoeller@OpenHardwareMonitorCore.org>
 	Copyright (C) 2011 Christian Vallières
  
 */
@@ -13,7 +13,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace OpenHardwareMonitorCore.Hardware.Nvidia {
+namespace OpenHardwareMonitorCore.Hardware.Nvidia;
 
   internal enum NvStatus {
     OK = 0,
@@ -256,7 +256,8 @@ namespace OpenHardwareMonitorCore.Hardware.Nvidia {
     public uint Reserved8;
   }
 
-  internal class NVAPI {
+internal class NVAPI
+{
 
     public const int MAX_PHYSICAL_GPUS = 64;
     public const int SHORT_STRING_MAX = 64;
@@ -324,12 +325,12 @@ namespace OpenHardwareMonitorCore.Hardware.Nvidia {
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate NvStatus NvAPI_GPU_GetDynamicPstatesInfoExDelegate(
-      NvPhysicalGpuHandle gpuHandle, 
+      NvPhysicalGpuHandle gpuHandle,
       ref NvDynamicPstatesInfoEx dynamicPstatesInfoEx);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate NvStatus NvAPI_GPU_GetDynamicPstatesInfoDelegate(
-      NvPhysicalGpuHandle gpuHandle, 
+      NvPhysicalGpuHandle gpuHandle,
       ref NvDynamicPstatesInfo dynamicPstatesInfo);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -357,7 +358,7 @@ namespace OpenHardwareMonitorCore.Hardware.Nvidia {
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate NvStatus NvAPI_GPU_GetPCIIdentifiersDelegate(
-      NvPhysicalGpuHandle gpuHandle, out uint deviceId, out uint subSystemId, 
+      NvPhysicalGpuHandle gpuHandle, out uint deviceId, out uint subSystemId,
       out uint revisionId, out uint extDeviceId);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -410,87 +411,101 @@ namespace OpenHardwareMonitorCore.Hardware.Nvidia {
     private NVAPI() { }
 
     public static NvStatus NvAPI_GPU_GetFullName(NvPhysicalGpuHandle gpuHandle,
-      out string name) {
-      StringBuilder builder = new StringBuilder(SHORT_STRING_MAX);
-      NvStatus status;
-      if (_NvAPI_GPU_GetFullName != null)
-        status = _NvAPI_GPU_GetFullName(gpuHandle, builder);
-      else
-        status = NvStatus.FUNCTION_NOT_FOUND;
-      name = builder.ToString();
-      return status;
+      out string name)
+    {
+        StringBuilder builder = new StringBuilder(SHORT_STRING_MAX);
+        NvStatus status;
+        if (_NvAPI_GPU_GetFullName != null)
+            status = _NvAPI_GPU_GetFullName(gpuHandle, builder);
+        else
+            status = NvStatus.FUNCTION_NOT_FOUND;
+        name = builder.ToString();
+        return status;
     }
 
-    public static NvStatus NvAPI_GetInterfaceVersionString(out string version) {
-      StringBuilder builder = new StringBuilder(SHORT_STRING_MAX);
-      NvStatus status;
-      if (_NvAPI_GetInterfaceVersionString != null)
-        status = _NvAPI_GetInterfaceVersionString(builder);
-      else
-        status = NvStatus.FUNCTION_NOT_FOUND;
-      version = builder.ToString();
-      return status;
+    public static NvStatus NvAPI_GetInterfaceVersionString(out string version)
+    {
+        StringBuilder builder = new StringBuilder(SHORT_STRING_MAX);
+        NvStatus status;
+        if (_NvAPI_GetInterfaceVersionString != null)
+            status = _NvAPI_GetInterfaceVersionString(builder);
+        else
+            status = NvStatus.FUNCTION_NOT_FOUND;
+        version = builder.ToString();
+        return status;
     }
 
-    private static string GetDllName() {
-      if (IntPtr.Size == 4) {
-        return "nvapi.dll";
-      } else {
-        return "nvapi64.dll";
-      }
+    private static string GetDllName()
+    {
+        if (IntPtr.Size == 4)
+        {
+            return "nvapi.dll";
+        }
+        else
+        {
+            return "nvapi64.dll";
+        }
     }
 
     private static void GetDelegate<T>(uint id, out T newDelegate)
-      where T : class {
-      IntPtr ptr = nvapi_QueryInterface(id);
-      if (ptr != IntPtr.Zero) {
-        newDelegate =
-          Marshal.GetDelegateForFunctionPointer(ptr, typeof(T)) as T;
-      } else {
-        newDelegate = null;
-      }
+      where T : class
+    {
+        IntPtr ptr = nvapi_QueryInterface(id);
+        if (ptr != IntPtr.Zero)
+        {
+            newDelegate =
+              Marshal.GetDelegateForFunctionPointer(ptr, typeof(T)) as T;
+        }
+        else
+        {
+            newDelegate = null;
+        }
     }
 
-    static NVAPI() {
-      DllImportAttribute attribute = new DllImportAttribute(GetDllName());
-      attribute.CallingConvention = CallingConvention.Cdecl;
-      attribute.PreserveSig = true;
-      attribute.EntryPoint = "nvapi_QueryInterface";
-      PInvokeDelegateFactory.CreateDelegate(attribute,
-        out nvapi_QueryInterface);
+    static NVAPI()
+    {
+        DllImportAttribute attribute = new DllImportAttribute(GetDllName());
+        attribute.CallingConvention = CallingConvention.Cdecl;
+        attribute.PreserveSig = true;
+        attribute.EntryPoint = "nvapi_QueryInterface";
+        PInvokeDelegateFactory.CreateDelegate(attribute,
+          out nvapi_QueryInterface);
 
-      try {
-        GetDelegate(0x0150E828, out NvAPI_Initialize);
-      } catch (DllNotFoundException) { return; } 
-        catch (EntryPointNotFoundException) { return; } 
+        try
+        {
+            GetDelegate(0x0150E828, out NvAPI_Initialize);
+        }
+        catch (DllNotFoundException) { return; }
+        catch (EntryPointNotFoundException) { return; }
         catch (ArgumentNullException) { return; }
 
-      if (NvAPI_Initialize() == NvStatus.OK) {
-        GetDelegate(0xE3640A56, out NvAPI_GPU_GetThermalSettings);
-        GetDelegate(0xCEEE8E9F, out _NvAPI_GPU_GetFullName);
-        GetDelegate(0x9ABDD40D, out NvAPI_EnumNvidiaDisplayHandle);
-        GetDelegate(0x34EF9506, out NvAPI_GetPhysicalGPUsFromDisplay);
-        GetDelegate(0xE5AC921F, out NvAPI_EnumPhysicalGPUs);
-        GetDelegate(0x5F608315, out NvAPI_GPU_GetTachReading);
-        GetDelegate(0x1BD69F49, out NvAPI_GPU_GetAllClocks);
-        GetDelegate(0x60DED2ED, out NvAPI_GPU_GetDynamicPstatesInfoEx);
-        GetDelegate(0x189A1FDF, out NvAPI_GPU_GetDynamicPstatesInfo);
-        GetDelegate(0xDA141340, out NvAPI_GPU_GetCoolerSettings);
-        GetDelegate(0x891FA0AE, out NvAPI_GPU_SetCoolerLevels);
-        GetDelegate(0x774AA982, out NvAPI_GetDisplayDriverMemoryInfo);
-        GetDelegate(0xF951A4D1, out NvAPI_GetDisplayDriverVersion);
-        GetDelegate(0x01053FA5, out _NvAPI_GetInterfaceVersionString);
-        GetDelegate(0x2DDFB66E, out NvAPI_GPU_GetPCIIdentifiers);
-        GetDelegate(0x1BE0B8E5, out NvAPI_GPU_GetBusId);
-        GetDelegate(0x35AED5E8, out NvAPI_GPU_ClientFanCoolersGetStatus);
+        if (NvAPI_Initialize() == NvStatus.OK)
+        {
+            GetDelegate(0xE3640A56, out NvAPI_GPU_GetThermalSettings);
+            GetDelegate(0xCEEE8E9F, out _NvAPI_GPU_GetFullName);
+            GetDelegate(0x9ABDD40D, out NvAPI_EnumNvidiaDisplayHandle);
+            GetDelegate(0x34EF9506, out NvAPI_GetPhysicalGPUsFromDisplay);
+            GetDelegate(0xE5AC921F, out NvAPI_EnumPhysicalGPUs);
+            GetDelegate(0x5F608315, out NvAPI_GPU_GetTachReading);
+            GetDelegate(0x1BD69F49, out NvAPI_GPU_GetAllClocks);
+            GetDelegate(0x60DED2ED, out NvAPI_GPU_GetDynamicPstatesInfoEx);
+            GetDelegate(0x189A1FDF, out NvAPI_GPU_GetDynamicPstatesInfo);
+            GetDelegate(0xDA141340, out NvAPI_GPU_GetCoolerSettings);
+            GetDelegate(0x891FA0AE, out NvAPI_GPU_SetCoolerLevels);
+            GetDelegate(0x774AA982, out NvAPI_GetDisplayDriverMemoryInfo);
+            GetDelegate(0xF951A4D1, out NvAPI_GetDisplayDriverVersion);
+            GetDelegate(0x01053FA5, out _NvAPI_GetInterfaceVersionString);
+            GetDelegate(0x2DDFB66E, out NvAPI_GPU_GetPCIIdentifiers);
+            GetDelegate(0x1BE0B8E5, out NvAPI_GPU_GetBusId);
+            GetDelegate(0x35AED5E8, out NvAPI_GPU_ClientFanCoolersGetStatus);
 
-        available = true;
-      }
+            available = true;
+        }
     }
 
-    public static bool IsAvailable {
-      get { return available; }
+    public static bool IsAvailable
+    {
+        get { return available; }
     }
 
-  }
 }

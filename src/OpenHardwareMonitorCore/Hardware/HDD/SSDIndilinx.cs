@@ -4,18 +4,19 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-  Copyright (C) 2009-2015 Michael Möller <mmoeller@openhardwaremonitor.org>
+  Copyright (C) 2009-2015 Michael Möller <mmoeller@OpenHardwareMonitorCore.org>
 	Copyright (C) 2010 Paul Werelds
   Copyright (C) 2011 Roland Reinl <roland-reinl@gmx.de>
 	
 */
 
-namespace OpenHardwareMonitorCore.Hardware.HDD {
+namespace OpenHardwareMonitorCore.Hardware.HDD;
   using System.Collections.Generic;
 
-  [NamePrefix(""), RequireSmart(0x01), RequireSmart(0x09), RequireSmart(0x0C), 
-    RequireSmart(0xD1), RequireSmart(0xCE), RequireSmart(0xCF)]
-  internal class SSDIndilinx : AbstractHarddrive {
+[NamePrefix(""), RequireSmart(0x01), RequireSmart(0x09), RequireSmart(0x0C),
+  RequireSmart(0xD1), RequireSmart(0xCE), RequireSmart(0xCF)]
+internal class SSDIndilinx : AbstractHarddrive
+{
 
     private static readonly IEnumerable<SmartAttribute> smartAttributes =
       new List<SmartAttribute> {
@@ -44,10 +45,9 @@ namespace OpenHardwareMonitorCore.Hardware.HDD {
         new SmartAttribute(0xD4, SmartNames.SataErrorCountHandshake)
       };
 
-    public SSDIndilinx(ISmart smart, string name, string firmwareRevision, 
+    public SSDIndilinx(ISmart smart, string name, string firmwareRevision,
       int index, ISettings settings)
-      : base(smart, name, firmwareRevision, index, smartAttributes, settings) {}
-  }
+      : base(smart, name, firmwareRevision, index, smartAttributes, settings) { }
 }
 
 

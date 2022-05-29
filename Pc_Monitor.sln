@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pc_Monitor.Wpf", "src\Pc_Mo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{6E6035DE-BC13-48D4-A0B4-D6EF944FC682}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHardwareMonitorCore", "src\OpenHardwareMonitorCore\OpenHardwareMonitorCore.csproj", "{56689663-AA9F-4837-8D83-24808F791410}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenHardwareMonitorCore", "src\OpenHardwareMonitorCore\OpenHardwareMonitorCore.csproj", "{56689663-AA9F-4837-8D83-24808F791410}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4069A958-768A-4A91-82E4-FCAFC13C0369}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,7 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7539767F-14AE-49F9-BCF1-97E90048529C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pc_Monitor.ConsoleTest", "src\Pc_Monitor.ConsoleTest\Pc_Monitor.ConsoleTest.csproj", "{D7979EC7-C0D0-4AA4-8800-1318D482B2EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pc_Monitor.ConsoleTest", "src\Pc_Monitor.ConsoleTest\Pc_Monitor.ConsoleTest.csproj", "{D7979EC7-C0D0-4AA4-8800-1318D482B2EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenHardwareMonitorLib", "D:\ThirdPartyRepository\ohm\dotnet5\openhardwaremonitor\OpenHardwareMonitorLib\OpenHardwareMonitorLib.csproj", "{3EA99C3E-D3A3-4DC7-8337-1046F81CF60C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{D7979EC7-C0D0-4AA4-8800-1318D482B2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7979EC7-C0D0-4AA4-8800-1318D482B2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7979EC7-C0D0-4AA4-8800-1318D482B2EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EA99C3E-D3A3-4DC7-8337-1046F81CF60C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EA99C3E-D3A3-4DC7-8337-1046F81CF60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EA99C3E-D3A3-4DC7-8337-1046F81CF60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EA99C3E-D3A3-4DC7-8337-1046F81CF60C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

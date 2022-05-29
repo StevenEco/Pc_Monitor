@@ -4,12 +4,13 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-  Copyright (C) 2009-2011 Michael Möller <mmoeller@openhardwaremonitor.org>
+  Copyright (C) 2009-2011 Michael Möller <mmoeller@OpenHardwareMonitorCore.org>
 	
 */
 
-namespace OpenHardwareMonitorCore.Hardware.LPC {
-  internal interface ISuperIO {
+namespace OpenHardwareMonitorCore.Hardware.LPC;
+internal interface ISuperIO
+{
 
     Chip Chip { get; }
 
@@ -20,7 +21,7 @@ namespace OpenHardwareMonitorCore.Hardware.LPC {
     float?[] Controls { get; }
 
     // set control value, null = auto    
-    void SetControl(int index, byte? value);         
+    void SetControl(int index, byte? value);
 
     // read and write GPIO
     byte? ReadGPIO(int index);
@@ -29,5 +30,4 @@ namespace OpenHardwareMonitorCore.Hardware.LPC {
     string GetReport();
 
     void Update();
-  }
 }

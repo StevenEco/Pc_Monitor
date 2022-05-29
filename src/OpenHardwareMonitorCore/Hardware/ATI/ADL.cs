@@ -4,17 +4,16 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-  Copyright (C) 2009-2020 Michael Möller <mmoeller@openhardwaremonitor.org>
+  Copyright (C) 2009-2020 Michael Möller <mmoeller@OpenHardwareMonitorCore.org>
 	
 */
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace OpenHardwareMonitorCore.Hardware.ATI {
-  
-  [StructLayout(LayoutKind.Sequential)]
+namespace OpenHardwareMonitorCore.Hardware.ATI;
+
+[StructLayout(LayoutKind.Sequential)]
   internal struct ADLAdapterInfo {
     public int Size;
     public int AdapterIndex;
@@ -301,7 +300,8 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
     ERR_NO_XDISPLAY = -21    
   }
 
-  internal class ADL {
+internal class ADL
+{
     public const int ADL_MAX_PATH = 256;
     public const int ADL_MAX_ADAPTERS = 40;
     public const int ADL_MAX_DISPLAYS = 40;
@@ -330,11 +330,11 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
 
     public delegate ADLStatus ADL_Main_Control_DestroyDelegate();
     public delegate ADLStatus ADL_Adapter_NumberOfAdapters_GetDelegate(
-      ref int numAdapters);    
+      ref int numAdapters);
     public delegate ADLStatus ADL_Adapter_ID_GetDelegate(int adapterIndex,
       out int adapterID);
     public delegate ADLStatus ADL_Display_AdapterID_GetDelegate(int adapterIndex,
-      out int adapterID);      	
+      out int adapterID);
     public delegate int ADL_Adapter_Active_GetDelegate(int adapterIndex,
       out int status);
     public delegate ADLStatus ADL_Overdrive5_CurrentActivity_GetDelegate(
@@ -342,23 +342,23 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
     public delegate ADLStatus ADL_Overdrive5_Temperature_GetDelegate(int adapterIndex,
         int thermalControllerIndex, ref ADLTemperature temperature);
     public delegate ADLStatus ADL_Overdrive5_FanSpeed_GetDelegate(int adapterIndex,
-        int thermalControllerIndex, ref	ADLFanSpeedValue fanSpeedValue);
+        int thermalControllerIndex, ref ADLFanSpeedValue fanSpeedValue);
     public delegate ADLStatus ADL_Overdrive5_FanSpeedInfo_GetDelegate(
       int adapterIndex, int thermalControllerIndex,
       ref ADLFanSpeedInfo fanSpeedInfo);
     public delegate ADLStatus ADL_Overdrive5_FanSpeedToDefault_SetDelegate(
       int adapterIndex, int thermalControllerIndex);
     public delegate ADLStatus ADL_Overdrive5_FanSpeed_SetDelegate(int adapterIndex,
-      int thermalControllerIndex, ref	ADLFanSpeedValue fanSpeedValue);
+      int thermalControllerIndex, ref ADLFanSpeedValue fanSpeedValue);
     public delegate ADLStatus ADL_Overdrive_CapsDelegate(int adapterIndex,
       out int supported, out int enabled, out int version);
     private delegate ADLStatus ADL2_Main_Control_CreateDelegate(
-      ADL_Main_Memory_AllocDelegate callback, int enumConnectedAdapters, 
+      ADL_Main_Memory_AllocDelegate callback, int enumConnectedAdapters,
       out IntPtr context);
     public delegate ADLStatus ADL2_Main_Control_DestroyDelegate(IntPtr context);
     public delegate ADLStatus ADL2_OverdriveN_Temperature_GetDelegate(IntPtr context,
       int adapterIndex, ADLODNTemperatureType temperatureType,
-      out int temperature);                        
+      out int temperature);
     public delegate ADLStatus ADL2_Overdrive6_CurrentPower_GetDelegate(IntPtr context,
       int adapterIndex, ADLODNCurrentPowerType powerType,
       out int currentValue);
@@ -367,7 +367,7 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
     public delegate ADLStatus ADL_Overdrive5_ODParameters_GetDelegate(
       int adapterIndex, out ADLODParameters parameters);
     public delegate ADLStatus ADL2_OverdriveN_PerformanceStatus_GetDelegate(
-      IntPtr context, int adapterIndex, 
+      IntPtr context, int adapterIndex,
       out ADLODNPerformanceStatus performanceStatus);
     public delegate ADLStatus ADL_Graphics_Versions_GetDelegate(
       out ADLVersionsInfo versionInfo);
@@ -381,11 +381,11 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
       ADL_Main_Control_Destroy;
     public static ADL_Adapter_NumberOfAdapters_GetDelegate
       ADL_Adapter_NumberOfAdapters_Get;
-    public static ADL_Adapter_ID_GetDelegate 
+    public static ADL_Adapter_ID_GetDelegate
       _ADL_Adapter_ID_Get;
-    public static ADL_Display_AdapterID_GetDelegate 
+    public static ADL_Display_AdapterID_GetDelegate
       _ADL_Display_AdapterID_Get;
-    public static ADL_Adapter_Active_GetDelegate 
+    public static ADL_Adapter_Active_GetDelegate
       ADL_Adapter_Active_Get;
     public static ADL_Overdrive5_CurrentActivity_GetDelegate
       ADL_Overdrive5_CurrentActivity_Get;
@@ -399,7 +399,7 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
       ADL_Overdrive5_FanSpeedToDefault_Set;
     public static ADL_Overdrive5_FanSpeed_SetDelegate
       ADL_Overdrive5_FanSpeed_Set;
-    public static ADL_Overdrive_CapsDelegate 
+    public static ADL_Overdrive_CapsDelegate
       ADL_Overdrive_Caps;
     private static ADL2_Main_Control_CreateDelegate
       _ADL2_Main_Control_Create;
@@ -421,158 +421,182 @@ namespace OpenHardwareMonitorCore.Hardware.ATI {
     private static string dllName;
 
     private static void GetDelegate<T>(string entryPoint, out T newDelegate)
-      where T : class 
+      where T : class
     {
-      DllImportAttribute attribute = new DllImportAttribute(dllName);
-      attribute.CallingConvention = CallingConvention.Cdecl;
-      attribute.PreserveSig = true;
-      attribute.EntryPoint = entryPoint;
-      PInvokeDelegateFactory.CreateDelegate(attribute, out newDelegate);
+        DllImportAttribute attribute = new DllImportAttribute(dllName);
+        attribute.CallingConvention = CallingConvention.Cdecl;
+        attribute.PreserveSig = true;
+        attribute.EntryPoint = entryPoint;
+        PInvokeDelegateFactory.CreateDelegate(attribute, out newDelegate);
     }
 
-    private static void CreateDelegates(string name) {
-      if (OperatingSystem.IsUnix)
-        dllName = name + ".so";
-      else
-        dllName = name + ".dll";
+    private static void CreateDelegates(string name)
+    {
+        if (OperatingSystem.IsUnix)
+            dllName = name + ".so";
+        else
+            dllName = name + ".dll";
 
-      GetDelegate("ADL_Main_Control_Create",
-        out _ADL_Main_Control_Create);
-      GetDelegate("ADL_Adapter_AdapterInfo_Get",
-        out _ADL_Adapter_AdapterInfo_Get);
-      GetDelegate("ADL_Main_Control_Destroy",
-        out ADL_Main_Control_Destroy);
-      GetDelegate("ADL_Adapter_NumberOfAdapters_Get",
-        out ADL_Adapter_NumberOfAdapters_Get);
-      GetDelegate("ADL_Adapter_ID_Get",
-        out _ADL_Adapter_ID_Get);
-      GetDelegate("ADL_Display_AdapterID_Get", 
-        out _ADL_Display_AdapterID_Get);
-      GetDelegate("ADL_Adapter_Active_Get",
-        out ADL_Adapter_Active_Get);
-      GetDelegate("ADL_Overdrive5_CurrentActivity_Get",
-        out ADL_Overdrive5_CurrentActivity_Get);
-      GetDelegate("ADL_Overdrive5_Temperature_Get",
-        out ADL_Overdrive5_Temperature_Get);
-      GetDelegate("ADL_Overdrive5_FanSpeed_Get",
-        out ADL_Overdrive5_FanSpeed_Get);
-      GetDelegate("ADL_Overdrive5_FanSpeedInfo_Get",
-        out ADL_Overdrive5_FanSpeedInfo_Get);
-      GetDelegate("ADL_Overdrive5_FanSpeedToDefault_Set",
-        out ADL_Overdrive5_FanSpeedToDefault_Set);
-      GetDelegate("ADL_Overdrive5_FanSpeed_Set",
-        out ADL_Overdrive5_FanSpeed_Set);
-      GetDelegate("ADL_Overdrive_Caps", 
-        out ADL_Overdrive_Caps);
-      GetDelegate("ADL2_Main_Control_Create",
-        out _ADL2_Main_Control_Create);
-      GetDelegate("ADL2_Main_Control_Destroy",
-        out ADL2_Main_Control_Destroy);
-      GetDelegate("ADL2_OverdriveN_Temperature_Get",
-        out ADL2_OverdriveN_Temperature_Get);
-      GetDelegate("ADL2_Overdrive6_CurrentPower_Get",
-        out ADL2_Overdrive6_CurrentPower_Get);
-      GetDelegate("ADL2_New_QueryPMLogData_Get",
-        out ADL2_New_QueryPMLogData_Get);
-      GetDelegate("ADL_Overdrive5_ODParameters_Get",
-        out ADL_Overdrive5_ODParameters_Get);
-      GetDelegate("ADL2_OverdriveN_PerformanceStatus_Get",
-        out ADL2_OverdriveN_PerformanceStatus_Get);
-      GetDelegate("ADL_Graphics_Versions_Get",
-        out ADL_Graphics_Versions_Get);
-  }
+        GetDelegate("ADL_Main_Control_Create",
+          out _ADL_Main_Control_Create);
+        GetDelegate("ADL_Adapter_AdapterInfo_Get",
+          out _ADL_Adapter_AdapterInfo_Get);
+        GetDelegate("ADL_Main_Control_Destroy",
+          out ADL_Main_Control_Destroy);
+        GetDelegate("ADL_Adapter_NumberOfAdapters_Get",
+          out ADL_Adapter_NumberOfAdapters_Get);
+        GetDelegate("ADL_Adapter_ID_Get",
+          out _ADL_Adapter_ID_Get);
+        GetDelegate("ADL_Display_AdapterID_Get",
+          out _ADL_Display_AdapterID_Get);
+        GetDelegate("ADL_Adapter_Active_Get",
+          out ADL_Adapter_Active_Get);
+        GetDelegate("ADL_Overdrive5_CurrentActivity_Get",
+          out ADL_Overdrive5_CurrentActivity_Get);
+        GetDelegate("ADL_Overdrive5_Temperature_Get",
+          out ADL_Overdrive5_Temperature_Get);
+        GetDelegate("ADL_Overdrive5_FanSpeed_Get",
+          out ADL_Overdrive5_FanSpeed_Get);
+        GetDelegate("ADL_Overdrive5_FanSpeedInfo_Get",
+          out ADL_Overdrive5_FanSpeedInfo_Get);
+        GetDelegate("ADL_Overdrive5_FanSpeedToDefault_Set",
+          out ADL_Overdrive5_FanSpeedToDefault_Set);
+        GetDelegate("ADL_Overdrive5_FanSpeed_Set",
+          out ADL_Overdrive5_FanSpeed_Set);
+        GetDelegate("ADL_Overdrive_Caps",
+          out ADL_Overdrive_Caps);
+        GetDelegate("ADL2_Main_Control_Create",
+          out _ADL2_Main_Control_Create);
+        GetDelegate("ADL2_Main_Control_Destroy",
+          out ADL2_Main_Control_Destroy);
+        GetDelegate("ADL2_OverdriveN_Temperature_Get",
+          out ADL2_OverdriveN_Temperature_Get);
+        GetDelegate("ADL2_Overdrive6_CurrentPower_Get",
+          out ADL2_Overdrive6_CurrentPower_Get);
+        GetDelegate("ADL2_New_QueryPMLogData_Get",
+          out ADL2_New_QueryPMLogData_Get);
+        GetDelegate("ADL_Overdrive5_ODParameters_Get",
+          out ADL_Overdrive5_ODParameters_Get);
+        GetDelegate("ADL2_OverdriveN_PerformanceStatus_Get",
+          out ADL2_OverdriveN_PerformanceStatus_Get);
+        GetDelegate("ADL_Graphics_Versions_Get",
+          out ADL_Graphics_Versions_Get);
+    }
 
-    static ADL() {
-      CreateDelegates("atiadlxx");
+    static ADL()
+    {
+        CreateDelegates("atiadlxx");
     }
 
     private ADL() { }
 
-    public static ADLStatus ADL_Main_Control_Create(int enumConnectedAdapters) {
-      try {
-        try {
-          return _ADL_Main_Control_Create(Main_Memory_Alloc,
-            enumConnectedAdapters);
-        } catch {
-          CreateDelegates("atiadlxy");
-          return _ADL_Main_Control_Create(Main_Memory_Alloc,
-            enumConnectedAdapters);
+    public static ADLStatus ADL_Main_Control_Create(int enumConnectedAdapters)
+    {
+        try
+        {
+            try
+            {
+                return _ADL_Main_Control_Create(Main_Memory_Alloc,
+                  enumConnectedAdapters);
+            }
+            catch
+            {
+                CreateDelegates("atiadlxy");
+                return _ADL_Main_Control_Create(Main_Memory_Alloc,
+                  enumConnectedAdapters);
+            }
         }
-      } catch {
-        return ADLStatus.ERR;
-      }
+        catch
+        {
+            return ADLStatus.ERR;
+        }
     }
 
     public static ADLStatus ADL2_Main_Control_Create(int enumConnectedAdapters,
-      out IntPtr context) 
+      out IntPtr context)
     {
-      try {
-        var result = _ADL2_Main_Control_Create(Main_Memory_Alloc,
-          enumConnectedAdapters, out context);
-        if (result != ADLStatus.OK)
-          context = IntPtr.Zero;
-        return result;
-      } catch {
-        context = IntPtr.Zero;
-        return ADLStatus.ERR;
-      }
-     }
-
-    public static ADLStatus ADL_Adapter_AdapterInfo_Get(ADLAdapterInfo[] info) {
-      int elementSize = Marshal.SizeOf(typeof(ADLAdapterInfo));
-      int size = info.Length * elementSize;
-      IntPtr ptr = Marshal.AllocHGlobal(size);
-      var status = _ADL_Adapter_AdapterInfo_Get(ptr, size);
-      for (int i = 0; i < info.Length; i++)
-        info[i] = (ADLAdapterInfo)
-          Marshal.PtrToStructure((IntPtr)((long)ptr + i * elementSize),
-          typeof(ADLAdapterInfo));
-      Marshal.FreeHGlobal(ptr);
-
-      // the ADLAdapterInfo.VendorID field reported by ADL is wrong on 
-      // Windows systems (parse error), so we fix this here
-      for (int i = 0; i < info.Length; i++) {
-        // try Windows UDID format
-        Match m = Regex.Match(info[i].UDID, "PCI_VEN_([A-Fa-f0-9]{1,4})&.*");
-        if (m.Success && m.Groups.Count == 2) {
-          info[i].VendorID = Convert.ToInt32(m.Groups[1].Value, 16);
-          continue;
+        try
+        {
+            var result = _ADL2_Main_Control_Create(Main_Memory_Alloc,
+              enumConnectedAdapters, out context);
+            if (result != ADLStatus.OK)
+                context = IntPtr.Zero;
+            return result;
         }
-        // if above failed, try Unix UDID format
-        m = Regex.Match(info[i].UDID, "[0-9]+:[0-9]+:([0-9]+):[0-9]+:[0-9]+");
-        if (m.Success && m.Groups.Count == 2) {
-          info[i].VendorID = Convert.ToInt32(m.Groups[1].Value, 10);
+        catch
+        {
+            context = IntPtr.Zero;
+            return ADLStatus.ERR;
         }
-      }
+    }
 
-      return status;
+    public static ADLStatus ADL_Adapter_AdapterInfo_Get(ADLAdapterInfo[] info)
+    {
+        int elementSize = Marshal.SizeOf(typeof(ADLAdapterInfo));
+        int size = info.Length * elementSize;
+        IntPtr ptr = Marshal.AllocHGlobal(size);
+        var status = _ADL_Adapter_AdapterInfo_Get(ptr, size);
+        for (int i = 0; i < info.Length; i++)
+            info[i] = (ADLAdapterInfo)
+              Marshal.PtrToStructure((IntPtr)((long)ptr + i * elementSize),
+              typeof(ADLAdapterInfo));
+        Marshal.FreeHGlobal(ptr);
+
+        // the ADLAdapterInfo.VendorID field reported by ADL is wrong on 
+        // Windows systems (parse error), so we fix this here
+        for (int i = 0; i < info.Length; i++)
+        {
+            // try Windows UDID format
+            Match m = Regex.Match(info[i].UDID, "PCI_VEN_([A-Fa-f0-9]{1,4})&.*");
+            if (m.Success && m.Groups.Count == 2)
+            {
+                info[i].VendorID = Convert.ToInt32(m.Groups[1].Value, 16);
+                continue;
+            }
+            // if above failed, try Unix UDID format
+            m = Regex.Match(info[i].UDID, "[0-9]+:[0-9]+:([0-9]+):[0-9]+:[0-9]+");
+            if (m.Success && m.Groups.Count == 2)
+            {
+                info[i].VendorID = Convert.ToInt32(m.Groups[1].Value, 10);
+            }
+        }
+
+        return status;
     }
 
     public static ADLStatus ADL_Adapter_ID_Get(int adapterIndex,
-      out int adapterID) {
-      try {
-        return _ADL_Adapter_ID_Get(adapterIndex, out adapterID);
-      } catch (EntryPointNotFoundException) {
-        try {
-          return _ADL_Display_AdapterID_Get(adapterIndex, out adapterID);
-        } catch (EntryPointNotFoundException) {
-          adapterID = 1;
-          return ADLStatus.OK;
+      out int adapterID)
+    {
+        try
+        {
+            return _ADL_Adapter_ID_Get(adapterIndex, out adapterID);
         }
-      }
+        catch (EntryPointNotFoundException)
+        {
+            try
+            {
+                return _ADL_Display_AdapterID_Get(adapterIndex, out adapterID);
+            }
+            catch (EntryPointNotFoundException)
+            {
+                adapterID = 1;
+                return ADLStatus.OK;
+            }
+        }
     }
 
     private delegate IntPtr ADL_Main_Memory_AllocDelegate(int size);
 
     // create a Main_Memory_Alloc delegate and keep it alive
     private static ADL_Main_Memory_AllocDelegate Main_Memory_Alloc =
-      delegate(int size) {
-        return Marshal.AllocHGlobal(size);
+      delegate (int size)
+      {
+          return Marshal.AllocHGlobal(size);
       };
 
-    private static void Main_Memory_Free(IntPtr buffer) {
-      if (IntPtr.Zero != buffer)
-        Marshal.FreeHGlobal(buffer);
+    private static void Main_Memory_Free(IntPtr buffer)
+    {
+        if (IntPtr.Zero != buffer)
+            Marshal.FreeHGlobal(buffer);
     }
-  }
 }
